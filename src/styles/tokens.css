@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+:root {
+  --blue: #14509e;
+  --blue2: #2f6fc4;
+  --ink: #1d2b3f;
+  --mute: #5d6b80;
+  --bg: #ffffff;
+  --tint: #f2f6fb;
+  --line: #e1e8f1;
+}
+
+@theme {
+  --color-blue: var(--blue);
+  --color-blue2: var(--blue2);
+  --color-ink: var(--ink);
+  --color-mute: var(--mute);
+  --color-bg: var(--bg);
+  --color-tint: var(--tint);
+  --color-line: var(--line);
+  --font-sans: var(--font-outfit), system-ui, sans-serif;
+  --font-display: var(--font-fraunces), serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-size: 17px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue2);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
