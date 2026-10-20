@@ -1,13 +1,6 @@
 "use server";
 
 import { z } from "zod";
-import { Resend } from "resend";
-import { Redis } from "@upstash/redis";
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
-});
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required").max(100),
@@ -22,86 +15,59 @@ const formSchema = z.object({
 });
 
 export async function submitEnquiry(formData: FormData) {
-  // Lazily instantiate Resend inside the action at runtime
-  const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy_key");
+  const name = formData.get("name") as string;
+  const phone = formData.get("phone") as string;
+  const email = formData.get("email") as string;
+  const enquiryType = formData.get("enquiryType") as string;
+  const message = formData.get("message") as string;
+  const botcheck = formData.get("botcheck");
 
-  const rawData = {
-    name: formData.get("name"),
-    phone: formData.get("phone"),
-    email: formData.get("email"),
-    enquiryType: formData.get("enquiryType"),
-    message: formData.get("message"),
-    website: formData.get("website"),
-  };
-
-  const parsed = formSchema.safeParse(rawData);
-  if (!parsed.success) {
-    return { success: false, message: parsed.error.issues[0].message };
+  // Basic Honeypot Validation
+  if (botcheck) {
+    return { success: false, message: "Bot detected." };
   }
 
-  const { name, phone, email, enquiryType, message } = parsed.data;
+  if (!name || !message) {
+    return { success: false, message: "Name and message are required fields." };
+  }
 
-  const cleanName = name.replace(/[\n\r\t]/g, " ").trim();
-  const cleanPhone = (phone || "Not provided").replace(/[\n\r\t]/g, " ").trim();
-  const cleanEmail = (email || "Not provided").replace(/[\n\r\t]/g, " ").trim();
-  const cleanType = enquiryType.replace(/[\n\r\t]/g, " ").trim();
-  const cleanMessage = message.replace(/[\n\r\t]/g, " ").substring(0, 1000).trim();
+  const accessKey =
+    process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
+    "";
 
-  const results = await Promise.allSettled([
-    // 1. WhatsApp Cloud API
-    fetch(`https://graph.facebook.com/v21.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`, {
+  const payload = new FormData();
+  payload.append("access_key", accessKey);
+  payload.append("name", name);
+  payload.append("phone", phone || "Not provided");
+  payload.append("email", email || "Not provided");
+  payload.append("enquiryType", enquiryType || "General Enquiry");
+  payload.append("message", message);
+  payload.append("subject", `New Website Enquiry from ${name}`);
+  payload.append("from_name", "Fingersoft Tissues Website");
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: process.env.WHATSAPP_RECIPIENT,
-        type: "template",
-        template: {
-          name: process.env.WHATSAPP_TEMPLATE_NAME || "enquiry_notification",
-          language: { code: "en" },
-          components: [
-            {
-              type: "body",
-              parameters: [
-                { type: "text", text: cleanName },
-                { type: "text", text: cleanPhone },
-                { type: "text", text: cleanEmail },
-                { type: "text", text: cleanType },
-                { type: "text", text: cleanMessage },
-              ],
-            },
-          ],
-        },
-      }),
-    }).then(async (res) => {
-      if (!res.ok) throw new Error(await res.text());
-      return res.json();
-    }),
+      body: payload,
+    });
 
-    // 2. Backup Email via Resend
-    resend.emails.send({
-      from: "Fingersoft Tissues <onboarding@resend.dev>",
-      to: process.env.CONTACT_EMAIL_RECIPIENT || "support@ronypeter.in",
-      subject: `New Website Enquiry: ${cleanType} from ${cleanName}`,
-      html: `
-        <h2>New Enquiry Received</h2>
-        <p><strong>Name:</strong> ${cleanName}</p>
-        <p><strong>Phone:</strong> ${cleanPhone}</p>
-        <p><strong>Email:</strong> ${cleanEmail}</p>
-        <p><strong>Type:</strong> ${cleanType}</p>
-        <p><strong>Message:</strong><br/>${cleanMessage}</p>
-      `,
-    }),
-  ]);
+    const data = await response.json();
 
-  const hasSucceeded = results.some((r) => r.status === "fulfilled");
-
-  if (!hasSucceeded) {
-    return { success: false, message: "Failed to send enquiry. Please try contacting us via WhatsApp directly." };
+    if (data.success) {
+      return {
+        success: true,
+        message: "Thank you! Your enquiry has been sent successfully.",
+      };
+    } else {
+      return {
+        success: false,
+        message: data.message || "Failed to submit enquiry. Please try WhatsApp.",
+      };
+    }
+  } catch (err) {
+    return {
+      success: false,
+      message: "An error occurred while connecting to the email service.",
+    };
   }
-
-  return { success: true, message: "Thank you! Your enquiry has been sent successfully." };
 }

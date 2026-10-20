@@ -1,19 +1,46 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { submitEnquiry } from "../../app/actions/contact";
-import { MessageSquare, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { MessageSquare, Loader2, CheckCircle2, AlertCircle, Send } from "lucide-react";
 import Link from "next/link";
 
 export function ContactForm() {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<{ success?: boolean; message?: string } | null>(null);
 
-  async function handleSubmit(formData: FormData) {
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+  const web3FormsKey = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "";
+
+  async function handleWeb3FormsSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setStatus(null);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    // Attach environment-configured Web3Forms Access Key
+    formData.append("access_key", web3FormsKey);
+    formData.append("subject", `New Website Enquiry from ${formData.get("name")}`);
+    formData.append("from_name", "Fingersoft Tissues Website");
+
     startTransition(async () => {
-      const result = await submitEnquiry(formData);
-      setStatus(result);
+      try {
+        const response = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setStatus({ success: true, message: "Thank you! Your enquiry has been sent successfully." });
+          form.reset();
+        } else {
+          setStatus({ success: false, message: data.message || "Failed to send message. Please try WhatsApp directly." });
+        }
+      } catch (err) {
+        setStatus({ success: false, message: "An error occurred. Please check your network connection." });
+      }
     });
   }
 
@@ -24,12 +51,12 @@ export function ContactForm() {
           Get in Touch
         </h2>
         <p className="text-[var(--mute)] max-w-[36em] mb-10">
-          Have questions about bulk orders, distribution partnerships, or retail availability? Drop us a line below.
+          Have questions about bulk orders, distribution partnerships, or custom tissue branding? Drop us a line below.
         </p>
 
-        <form action={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[760px]">
-          {/* Honeypot field */}
-          <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+        <form onSubmit={handleWeb3FormsSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-[760px]">
+          {/* Honeypot field for bot protection */}
+          <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} />
 
           <label className="grid gap-1.5 text-[14px] font-medium text-[var(--mute)]">
             Full Name *
@@ -37,7 +64,7 @@ export function ContactForm() {
               type="text"
               name="name"
               required
-              placeholder="Rony Peter"
+              placeholder="e.g. John Doe"
               className="font-sans text-[var(--ink)] px-4 py-3.5 border-[1.5px] border-[var(--line)] rounded-[14px] bg-white w-full focus:outline-hidden focus:border-[var(--blue2)]"
             />
           </label>
@@ -57,7 +84,7 @@ export function ContactForm() {
             <input
               type="email"
               name="email"
-              placeholder="rony@example.com"
+              placeholder="john@company.com"
               className="font-sans text-[var(--ink)] px-4 py-3.5 border-[1.5px] border-[var(--line)] rounded-[14px] bg-white w-full focus:outline-hidden focus:border-[var(--blue2)]"
             />
           </label>
@@ -71,6 +98,7 @@ export function ContactForm() {
             >
               <option value="general">General Enquiry</option>
               <option value="distribution">Distribution & Wholesale</option>
+              <option value="customized">Customized/Branded Tissues</option>
               <option value="retail">Retail Partnership</option>
               <option value="support">Customer Support</option>
             </select>
@@ -83,13 +111,13 @@ export function ContactForm() {
               required
               rows={4}
               maxLength={1000}
-              placeholder="How can we help you today?"
+              placeholder="Tell us about your requirements, estimated quantity, or questions..."
               className="font-sans text-[var(--ink)] px-4 py-3.5 border-[1.5px] border-[var(--line)] rounded-[14px] bg-white w-full focus:outline-hidden focus:border-[var(--blue2)] resize-y"
             ></textarea>
           </label>
 
           <p className="text-xs text-[var(--mute)] md:col-span-2">
-            By submitting this form, you acknowledge that your details will be sent to our team via WhatsApp and email. Read our{" "}
+            By submitting this form, you acknowledge that your details will be sent directly to our team. Read our{" "}
             <Link href="/privacy" className="underline hover:text-[var(--blue)]">Privacy Policy</Link>.
           </p>
 
@@ -97,17 +125,17 @@ export function ContactForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--blue)] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[var(--blue2)] transition-colors cursor-pointer disabled:opacity-70"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[var(--blue)] !text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[var(--blue2)] transition-colors cursor-pointer disabled:opacity-70"
             >
-              {isPending && <Loader2 className="w-5 h-5 animate-spin" />}
+              {isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4" />}
               Send Enquiry
             </button>
 
             <a
-              href="https://wa.me/919876543210?text=Hi%2C%20I%20would%20like%20to%20enquire%20about%20Fingersoft%20Tissues."
+              href={`https://wa.me/${whatsappNumber}?text=Hi%2C%20I%20would%20like%20to%20enquire%20about%20Fingersoft%20Tissues.`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] text-white px-6 py-3.5 rounded-full font-semibold hover:bg-[#20ba5a] transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] !text-white px-6 py-3.5 rounded-full font-semibold hover:bg-[#20ba5a] transition-colors"
             >
               <MessageSquare className="w-5 h-5" />
               Chat on WhatsApp
