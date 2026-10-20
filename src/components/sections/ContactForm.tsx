@@ -96,11 +96,8 @@ export function ContactForm() {
               defaultValue="general"
               className="font-sans text-[var(--ink)] px-4 py-3.5 border-[1.5px] border-[var(--line)] rounded-[14px] bg-white w-full focus:outline-hidden focus:border-[var(--blue2)]"
             >
-              <option value="general">General Enquiry</option>
-              <option value="distribution">Distribution & Wholesale</option>
-              <option value="customized">Customized/Branded Tissues</option>
-              <option value="retail">Retail Partnership</option>
-              <option value="support">Customer Support</option>
+              <option value="general">Premium Tissues</option>
+              <option value="distribution">Customized Tissues</option>
             </select>
           </label>
 
