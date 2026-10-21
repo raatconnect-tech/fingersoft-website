@@ -9,8 +9,8 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-      <FeatureGrid />
       <Categories />
+      <FeatureGrid />
       <ProductSplit />
       <BrandQuote />
       <ContactForm />

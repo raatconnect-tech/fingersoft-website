@@ -93,11 +93,11 @@ export function ContactForm() {
             Enquiry Type
             <select
               name="enquiryType"
-              defaultValue="general"
+              defaultValue="premium"
               className="font-sans text-[var(--ink)] px-4 py-3.5 border-[1.5px] border-[var(--line)] rounded-[14px] bg-white w-full focus:outline-hidden focus:border-[var(--blue2)]"
             >
-              <option value="general">Premium Tissues</option>
-              <option value="distribution">Customized Tissues</option>
+              <option value="premium">Premium Tissues</option>
+              <option value="customized">Customized Tissues</option>
             </select>
           </label>
 

@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image"; // Import Next.js Image component
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Package, Crown, Building2, CheckCircle2 } from "lucide-react";
+import { Crown, Building2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 if (typeof window !== "undefined") {
@@ -17,9 +18,10 @@ export function Categories() {
   useGSAP(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // Entrance animation for the cards themselves
     gsap.fromTo(
-      ".category-card",
-      { opacity: 0, y: 40, scale: 0.95 },
+      ".category-split-card",
+      { opacity: 0, y: 40, scale: 0.98 },
       {
         opacity: 1,
         y: 0,
@@ -38,8 +40,9 @@ export function Categories() {
 
   return (
     <section ref={sectionRef} id="categories" className="py-[88px] bg-[var(--tint)]">
-      <div className="max-w-[1100px] mx-auto px-6">
-        <div className="text-center max-w-[600px] mx-auto mb-14">
+      <div className="max-w-[1100px] mx-auto px-6 flex flex-col items-center">
+        {/* Header Section */}
+        <div className="text-center max-w-[600px] mb-[64px]">
           <span className="text-[var(--blue)] font-semibold text-[15px] uppercase tracking-wider block mb-2">Product Lineup</span>
           <h2 className="text-[clamp(32px,4vw,46px)] leading-[1.15] tracking-[-0.8px] font-bold text-[var(--ink)] mb-4">
             Our Tissue Categories
@@ -49,80 +52,107 @@ export function Categories() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Content Section: Column of Split Cards */}
+        <div className="flex flex-col gap-[24px] w-full">
           
           {/* Category 1: Premium Tissues */}
-          <div className="category-card bg-white rounded-[28px] p-8 md:p-10 border border-[var(--line)] shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-[var(--blue)] mb-6">
-                <Crown className="w-7 h-7" />
+          <div className="category-split-card grid grid-cols-1 md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
+            {/* Left Column: Content */}
+            <div className="flex flex-col p-8 md:p-10 justify-between">
+              <div>
+                <div className="w-[56px] h-[56px] rounded-[16px] bg-blue-50 border border-blue-100 flex items-center justify-center text-[var(--blue)] mb-6">
+                  <Crown className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-[var(--blue)] bg-[var(--tint)] px-3.5 py-1.5 rounded-full inline-block">
+                  Retail & Household
+                </span>
+                <h3 className="text-2xl md:text-3xl font-bold text-[var(--ink)] mt-4 mb-3">
+                  Premium Tissues
+                </h3>
+                <p className="text-[var(--mute)] text-[15.5px] leading-relaxed mb-8">
+                  Ultra-soft 2-ply & 3-ply virgin pulp tissue packs crafted for households, luxury cars, and premium personal care.
+                </p>
+                
+                <ul className="space-y-3.5 mb-10 text-[15px] font-medium text-[var(--ink)]">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
+                    Facial Tissue Boxes & Pocket Packs
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
+                    Ultra Soft & Highly Absorbent Sheets
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
+                    Hypoallergenic & Fragrance-Free
+                  </li>
+                </ul>
               </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[var(--blue)] bg-[var(--tint)] px-3 py-1 rounded-full">
-                Retail & Household
-              </span>
-              <h3 className="text-2xl font-bold text-[var(--ink)] mt-3 mb-3">
-                Premium Tissues
-              </h3>
-              <p className="text-[var(--mute)] text-[15.5px] leading-relaxed mb-6">
-                Ultra-soft 2-ply & 3-ply virgin pulp tissue packs crafted for households, luxury cars, and premium personal care.
-              </p>
-              
-              <ul className="space-y-3 mb-8 text-sm font-medium text-[var(--ink)]">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
-                  Facial Tissue Boxes & Pocket Packs
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
-                  Ultra Soft & Highly Absorbent Sheets
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--blue)] shrink-0" />
-                  Hypoallergenic & Fragrance-Free
-                </li>
-              </ul>
+
+              <Button href="#contact" variant="primary" className="w-full h-[52px] text-[15.5px] font-semibold">
+                Order Premium Packs
+              </Button>
             </div>
 
-            <Button href="#contact" variant="primary" className="w-full">
-              Order Premium Packs
-            </Button>
+            {/* Right Column: Image */}
+            <div className="relative aspect-[4/3] md:aspect-auto">
+              <Image 
+                src="/images/premium-tissues.png" // Put your premium tissues image path here
+                alt="Stack of Fingersoft tissue boxes"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
 
           {/* Category 2: Customized Tissues */}
-          <div className="category-card bg-white rounded-[28px] p-8 md:p-10 border border-[var(--line)] shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-6">
-                <Building2 className="w-7 h-7" />
-              </div>
-              <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full">
-                B2B & Commercial
-              </span>
-              <h3 className="text-2xl font-bold text-[var(--ink)] mt-3 mb-3">
-                Customized Tissues
-              </h3>
-              <p className="text-[var(--mute)] text-[15.5px] leading-relaxed mb-6">
-                Elevate your business branding with custom-printed tissue boxes, napkin branding, and bespoke packaging for hospitality & corporate clients.
-              </p>
-              
-              <ul className="space-y-3 mb-8 text-sm font-medium text-[var(--ink)]">
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  Custom Brand Logo & Color Printing
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  For Hotels, Restaurants, Cafes & Airlines
-                </li>
-                <li className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                  Bulk Wholesale & Flexible MOQ Options
-                </li>
-              </ul>
+          <div className="category-split-card grid grid-cols-1 md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
+            {/* Left Column: Image */}
+            <div className="relative aspect-[4/3] md:aspect-auto">
+              <Image 
+                src="/images/customized-napkins.png" // Put your customized napkins image path here
+                alt="Stacked folded tissues with custom brand logos"
+                fill
+                className="object-cover"
+              />
             </div>
 
-            <Button href="#contact" variant="ghost" className="w-full">
-              Request Custom Quote
-            </Button>
+            {/* Right Column: Content */}
+            <div className="flex flex-col p-8 md:p-10 justify-between">
+              <div>
+                <div className="w-[56px] h-[56px] rounded-[16px] bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 mb-6">
+                  <Building2 className="w-6 h-6" />
+                </div>
+                <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3.5 py-1.5 rounded-full inline-block">
+                  B2B & Commercial
+                </span>
+                <h3 className="text-2xl md:text-3xl font-bold text-[var(--ink)] mt-4 mb-3">
+                  Customized Tissues
+                </h3>
+                <p className="text-[var(--mute)] text-[15.5px] leading-relaxed mb-8">
+                  Elevate your business branding with custom-printed tissue boxes, napkin branding, and bespoke packaging for hospitality & corporate clients.
+                </p>
+                
+                <ul className="space-y-3.5 mb-10 text-[15px] font-medium text-[var(--ink)]">
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
+                    Custom Brand Logo & Color Printing
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
+                    For Hotels, Restaurants, Cafes & Airlines
+                  </li>
+                  <li className="flex items-center gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
+                    Bulk Wholesale & Flexible MOQ Options
+                  </li>
+                </ul>
+              </div>
+
+              <Button href="#contact" variant="ghost" className="w-full h-[52px] text-[15.5px] font-semibold">
+                Request Custom Quote
+              </Button>
+            </div>
           </div>
 
         </div>
