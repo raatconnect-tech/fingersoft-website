@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image"; // Import Next.js Image component
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -18,7 +18,6 @@ export function Categories() {
   useGSAP(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    // Entrance animation for the cards themselves
     gsap.fromTo(
       ".category-split-card",
       { opacity: 0, y: 40, scale: 0.98 },
@@ -55,8 +54,8 @@ export function Categories() {
         {/* Content Section: Column of Split Cards */}
         <div className="flex flex-col gap-[24px] w-full">
           
-          {/* Category 1: Premium Tissues */}
-          <div className="category-split-card grid grid-cols-1 md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
+          {/* Category 1: Premium Tissues (Image on top on mobile via flex-col-reverse) */}
+          <div className="category-split-card flex flex-col-reverse md:grid md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
             {/* Left Column: Content */}
             <div className="flex flex-col p-8 md:p-10 justify-between">
               <div>
@@ -97,7 +96,7 @@ export function Categories() {
             {/* Right Column: Image */}
             <div className="relative aspect-[4/3] md:aspect-auto">
               <Image 
-                src="/images/premium-tissues.png" // Put your premium tissues image path here
+                src="/images/premium-tissues.png"
                 alt="Stack of Fingersoft tissue boxes"
                 fill
                 className="object-cover"
@@ -105,12 +104,12 @@ export function Categories() {
             </div>
           </div>
 
-          {/* Category 2: Customized Tissues */}
-          <div className="category-split-card grid grid-cols-1 md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
-            {/* Left Column: Image */}
+          {/* Category 2: Customized Tissues (Image on top on mobile via standard flex-col) */}
+          <div className="category-split-card flex flex-col md:grid md:grid-cols-2 bg-white rounded-[28px] border border-[var(--line)] shadow-sm overflow-hidden hover:shadow-md transition-all">
+            {/* Left Column: Image (Appears first on mobile since it's first in markup) */}
             <div className="relative aspect-[4/3] md:aspect-auto">
               <Image 
-                src="/images/customized-napkins.png" // Put your customized napkins image path here
+                src="/images/customized-napkins.png"
                 alt="Stacked folded tissues with custom brand logos"
                 fill
                 className="object-cover"
