@@ -9,7 +9,7 @@ export function JsonLd() {
     logo: `${siteConfig.url}/icon.png`,
     sameAs: [
       siteConfig.social.instagram,
-      siteConfig.social.facebook,
+      // siteConfig.social.facebook,
     ],
     brand: {
       "@type": "Brand",

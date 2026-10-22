@@ -2,8 +2,17 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "About Us",
-  description: `Learn more about ${siteConfig.name}, a flagship tissue brand by ${siteConfig.parentBrand}.`,
+  title: `About Us | ${siteConfig.name}`,
+  description: `Learn more about ${siteConfig.name}, a premium product of ${siteConfig.parentBrand}, engineered for daily comfort and uncompromising quality.`,
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: `About Us | ${siteConfig.name}`,
+    description: `Learn more about ${siteConfig.name}, a premium product of ${siteConfig.parentBrand}.`,
+    url: '/about',
+    images: ['/images/fingersoft-tissues-blue-logo-h.png'],
+  },
 };
 
 export default function AboutPage() {

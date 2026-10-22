@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Journal & Insights",
-  description: "Read the latest updates and hygiene tips from Fingersoft Tissues.",
+  title: `Journal & Insights | ${siteConfig.name}`,
+  description: `Read the latest articles, hygiene tips, and corporate updates from ${siteConfig.name}.`,
+  alternates: {
+    canonical: '/blog',
+  },
+  openGraph: {
+    title: `Journal & Insights | ${siteConfig.name}`,
+    description: `Hygiene tips and updates from ${siteConfig.name}.`,
+    url: '/blog',
+    images: ['/images/fingersoft-tissues-blue-logo-h.png']
+  },
 };
 
 export default function BlogPage() {

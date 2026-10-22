@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { ProductSplit } from "@/components/sections/ProductSplit";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Why Fingersoft — Premium Tissues",
-  description: "Explore the superior softness, wet strength, and eco-friendly manufacturing behind Fingersoft Tissues.",
+  title: `Tissue Products & Catalog | ${siteConfig.name}`,
+  description: `Explore our complete lineup of premium facial tissue boxes, pocket packs, and custom-branded napkins for commercial use.`,
+  alternates: {
+    canonical: "/products",
+  },
+  openGraph: {
+    title: `Tissue Products & Catalog | ${siteConfig.name}`,
+    description: `High-absorbency, ultra-soft 2-ply and 3-ply facial tissue boxes and customizable napkin packs.`,
+    url: "/products",
+    images: ["/images/premium-tissues.png"],
+  },
 };
 
 export default function ProductsPage() {

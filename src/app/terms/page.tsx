@@ -2,8 +2,17 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: `Terms of service for ${siteConfig.name}.`,
+  title: `Terms of Service | ${siteConfig.name}`,
+  description: `Terms and conditions for using the ${siteConfig.name} website and purchasing products from ${siteConfig.parentBrand}.`,
+  alternates: {
+    canonical: '/terms',
+  },
+  openGraph: {
+    title: `Terms of Service | ${siteConfig.name}`,
+    description: `Terms and conditions for ${siteConfig.name}.`,
+    url: '/terms',
+    images: ['/images/fingersoft-tissues-blue-logo-h.png']
+  },
 };
 
 export default function TermsPage() {

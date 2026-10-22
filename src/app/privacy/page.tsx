@@ -2,8 +2,17 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: `Privacy policy for ${siteConfig.name}.`,
+  title: `Privacy Policy | ${siteConfig.name}`,
+  description: `Read the privacy policy for ${siteConfig.name} (${siteConfig.parentBrand}) to understand how we handle your data.`,
+  alternates: {
+    canonical: '/privacy',
+  },
+  openGraph: {
+    title: `Privacy Policy | ${siteConfig.name}`,
+    description: `Privacy policy and data handling guidelines for ${siteConfig.name}.`,
+    url: '/privacy',
+    images: ['/images/fingersoft-tissues-blue-logo-h.png']
+  },
 };
 
 export default function PrivacyPage() {
